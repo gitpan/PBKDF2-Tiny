@@ -29,7 +29,7 @@ no_index:
 provides:
   PBKDF2::Tiny:
     file: lib/PBKDF2/Tiny.pm
-    version: '0.001'
+    version: '0.002'
 requires:
   Carp: '0'
   Exporter: '5.57'
@@ -40,5 +40,5 @@ resources:
   bugtracker: https://github.com/dagolden/PBKDF2-Tiny/issues
   homepage: https://github.com/dagolden/PBKDF2-Tiny
   repository: https://github.com/dagolden/PBKDF2-Tiny.git
-version: '0.001'
+version: '0.002'
 x_authority: cpan:DAGOLDEN
