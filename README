@@ -2,7 +2,7 @@ NAME
     PBKDF2::Tiny - Minimalist PBKDF2 (RFC 2898) with HMAC-SHA1 or HMAC-SHA2
 
 VERSION
-    version 0.002
+    version 0.003
 
 SYNOPSIS
         use PBKDF2::Tiny qw/derive verify/;
@@ -19,6 +19,9 @@ DESCRIPTION
     100 lines of code. If you are using Perl 5.10 or later, it uses only
     core Perl modules. If you are on an earlier version of Perl, you need
     Digest::SHA or Digest::SHA::PurePerl.
+
+    All documented functions are optionally exported. No functions are
+    exported by default.
 
 FUNCTIONS
   derive
