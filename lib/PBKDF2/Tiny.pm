@@ -4,7 +4,7 @@ use warnings;
 package PBKDF2::Tiny;
 # ABSTRACT: Minimalist PBKDF2 (RFC 2898) with HMAC-SHA1 or HMAC-SHA2
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Carp ();
 use Exporter 5.57 qw/import/;
@@ -57,6 +57,9 @@ my %INT = map { $_ => pack( "N", $_ ) } 1 .. 16;
 #pod least 8 octets.  If you need a cryptographically strong salt, consider
 #pod L<Crypt::URandom>.
 #pod
+#pod The password and salt should encoded as octet strings. If not (i.e. if
+#pod Perl's internal 'UTF8' flag is on), then an exception will be thrown.
+#pod
 #pod The number of iterations defaults to 1000 if not provided.  If the derived
 #pod key length is not provided, it defaults to the output size of the digest
 #pod function.
@@ -72,6 +75,12 @@ sub derive {
     $salt   = '' unless defined $salt;
     $iterations ||= 1000;
     $dk_length  ||= $digest_length;
+
+    # we insist on octet strings for password and salt
+    Carp::croak("password must be an octet string, not a character string")
+      if utf8::is_utf8($passwd);
+    Carp::croak("salt must be an octet string, not a character string")
+      if utf8::is_utf8($salt);
 
     my $key = ( length($passwd) > $block_size ) ? $digester->($passwd) : $passwd;
     my $passes = int( $dk_length / $digest_length );
@@ -170,13 +179,16 @@ sub digest_fcn {
 
 #pod =func hmac
 #pod
-#pod     $key = $digest_fcn->($key) if length($key) > $block_sizes;
+#pod     $key = $digest_fcn->($key) if length($key) > $block_size;
 #pod     $hmac = hmac( $data, $key, $digest_fcn, $block_size );
 #pod
 #pod This function is used internally by PBKDF2::Tiny, but made available in case
 #pod it's useful to someone.
 #pod
-#pod The first two arguments are the data and key inputs to the HMAC function.
+#pod The first two arguments are the data and key inputs to the HMAC function.  Both
+#pod should be encoded as octet strings, as underlying HMAC/digest functions may
+#pod croak or may give unexpected results if Perl's internal UTF-8 flag is on.
+#pod
 #pod B<Note>: if the key is longer than the digest block size, it must be
 #pod preprocessed using the digesting function.
 #pod
@@ -214,7 +226,7 @@ PBKDF2::Tiny - Minimalist PBKDF2 (RFC 2898) with HMAC-SHA1 or HMAC-SHA2
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -251,6 +263,9 @@ don't do that!  L<RFC 2898
 recommends|https://tools.ietf.org/html/rfc2898#section-4.1> a random salt of at
 least 8 octets.  If you need a cryptographically strong salt, consider
 L<Crypt::URandom>.
+
+The password and salt should encoded as octet strings. If not (i.e. if
+Perl's internal 'UTF8' flag is on), then an exception will be thrown.
 
 The number of iterations defaults to 1000 if not provided.  If the derived
 key length is not provided, it defaults to the output size of the digest
@@ -290,13 +305,16 @@ digest type.
 
 =head2 hmac
 
-    $key = $digest_fcn->($key) if length($key) > $block_sizes;
+    $key = $digest_fcn->($key) if length($key) > $block_size;
     $hmac = hmac( $data, $key, $digest_fcn, $block_size );
 
 This function is used internally by PBKDF2::Tiny, but made available in case
 it's useful to someone.
 
-The first two arguments are the data and key inputs to the HMAC function.
+The first two arguments are the data and key inputs to the HMAC function.  Both
+should be encoded as octet strings, as underlying HMAC/digest functions may
+croak or may give unexpected results if Perl's internal UTF-8 flag is on.
+
 B<Note>: if the key is longer than the digest block size, it must be
 preprocessed using the digesting function.
 

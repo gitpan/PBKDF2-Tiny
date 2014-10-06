@@ -54,7 +54,7 @@
          "requires" : {
             "Carp" : "0",
             "Exporter" : "5.57",
-            "perl" : "5.006",
+            "perl" : "5.008",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -64,16 +64,18 @@
             "CPAN::Meta" : "2.120900"
          },
          "requires" : {
+            "Encode" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
-            "Test::More" : "0.88"
+            "Test::More" : "0.88",
+            "utf8" : "0"
          }
       }
    },
    "provides" : {
       "PBKDF2::Tiny" : {
          "file" : "lib/PBKDF2/Tiny.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       }
    },
    "release_status" : "stable",
@@ -88,7 +90,7 @@
          "web" : "https://github.com/dagolden/PBKDF2-Tiny"
       }
    },
-   "version" : "0.003",
+   "version" : "0.004",
    "x_authority" : "cpan:DAGOLDEN"
 }
 

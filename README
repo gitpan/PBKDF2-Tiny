@@ -2,7 +2,7 @@ NAME
     PBKDF2::Tiny - Minimalist PBKDF2 (RFC 2898) with HMAC-SHA1 or HMAC-SHA2
 
 VERSION
-    version 0.003
+    version 0.004
 
 SYNOPSIS
         use PBKDF2::Tiny qw/derive verify/;
@@ -37,6 +37,9 @@ FUNCTIONS
     least 8 octets. If you need a cryptographically strong salt, consider
     Crypt::URandom.
 
+    The password and salt should encoded as octet strings. If not (i.e. if
+    Perl's internal 'UTF8' flag is on), then an exception will be thrown.
+
     The number of iterations defaults to 1000 if not provided. If the
     derived key length is not provided, it defaults to the output size of
     the digest function.
@@ -70,15 +73,19 @@ FUNCTIONS
     length for that digest type.
 
   hmac
-        $key = $digest_fcn->($key) if length($key) > $block_sizes;
+        $key = $digest_fcn->($key) if length($key) > $block_size;
         $hmac = hmac( $data, $key, $digest_fcn, $block_size );
 
     This function is used internally by PBKDF2::Tiny, but made available in
     case it's useful to someone.
 
     The first two arguments are the data and key inputs to the HMAC
-    function. Note: if the key is longer than the digest block size, it must
-    be preprocessed using the digesting function.
+    function. Both should be encoded as octet strings, as underlying
+    HMAC/digest functions may croak or may give unexpected results if Perl's
+    internal UTF-8 flag is on.
+
+    Note: if the key is longer than the digest block size, it must be
+    preprocessed using the digesting function.
 
     The third and fourth arguments must be a digesting code reference (from
     "digest_fcn") and block size.

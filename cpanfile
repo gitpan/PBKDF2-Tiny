@@ -1,13 +1,15 @@
 requires "Carp" => "0";
 requires "Exporter" => "5.57";
-requires "perl" => "5.006";
+requires "perl" => "5.008";
 requires "strict" => "0";
 requires "warnings" => "0";
 
 on 'test' => sub {
+  requires "Encode" => "0";
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
   requires "Test::More" => "0.88";
+  requires "utf8" => "0";
 };
 
 on 'test' => sub {

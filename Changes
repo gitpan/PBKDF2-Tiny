@@ -1,5 +1,16 @@
 Revision history for PBKDF2-Tiny
 
+0.004     2014-10-06 11:18:07-04:00 America/New_York
+
+    [CHANGED]
+
+    - password and salt must be encoded as octets; if the internal UTF8
+      flag is on, an exception is thrown.
+
+    [DOCUMENTED]
+
+    - Fixed minor doc typo for 'hmac' function
+
 0.003     2014-09-29 10:21:45-04:00 America/New_York
 
     [FIXED]

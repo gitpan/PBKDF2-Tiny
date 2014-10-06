@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use Test::More 0.88;
 
+use utf8;
 use PBKDF2::Tiny qw/derive derive_hex verify verify_hex/;
+use Encode qw/encode_utf8/;
 
 #--------------------------------------------------------------------------#
 # custom test function
@@ -12,6 +14,12 @@ sub is_hex {
     my ( $got, $exp, $label ) = @_;
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     is( unpack( "H*", $got ), unpack( "H*", $exp ), $label );
+}
+
+sub exception(&) {
+    my $code = shift;
+    eval { $code->() };
+    return $@;
 }
 
 #--------------------------------------------------------------------------#
@@ -159,19 +167,79 @@ my @cases = (
 # test runner
 #--------------------------------------------------------------------------#
 
-for my $c (@cases) {
-    ( my $exp_hex = $c->{o} ) =~ s{ }{}g; # strip spaces
-    my $exp = pack( "H*", $exp_hex );
+subtest "Test cases" => sub {
+    for my $c (@cases) {
+        ( my $exp_hex = $c->{o} ) =~ s{ }{}g; # strip spaces
+        my $exp = pack( "H*", $exp_hex );
 
-    my $got = derive( @{$c}{qw/a p s c l/} );
-    is_hex( $got, $exp, "$c->{n} (derive)" );
+        my $got = derive( @{$c}{qw/a p s c l/} );
+        is_hex( $got, $exp, "$c->{n} (derive)" );
 
-    my $got_hex = derive_hex( @{$c}{qw/a p s c l/} );
-    is( $got_hex, $exp_hex, "$c->{n} (derive hex)" );
+        my $got_hex = derive_hex( @{$c}{qw/a p s c l/} );
+        is( $got_hex, $exp_hex, "$c->{n} (derive hex)" );
 
-    ok( verify( $exp, @{$c}{qw/a p s c l/} ), "$c->{n} (verify)" );
-    ok( verify_hex( $exp_hex, @{$c}{qw/a p s c l/} ), "$c->{n} (verify hex)" );
-}
+        ok( verify( $exp, @{$c}{qw/a p s c l/} ), "$c->{n} (verify)" );
+        ok( verify_hex( $exp_hex, @{$c}{qw/a p s c l/} ), "$c->{n} (verify hex)" );
+    }
+};
+
+subtest "Unicode" => sub {
+    my $latin1 = "büller";
+    utf8::upgrade($latin1);
+    my $wide = "☺♥☺•♥♥☺";
+
+    # password
+
+    like(
+        exception { derive( 'SHA-1', $latin1, 'salt', 1000 ) },
+        qr/password must be an octet string/,
+        "password: UTF8-on latin-1 is fatal"
+    );
+
+    is( exception { derive( 'SHA-1', encode_utf8($latin1), 'salt', 1000 ) },
+        '', "password: UTF-8 encoded latin-1 is OK" );
+
+    utf8::downgrade($latin1);
+    is( exception { derive( 'SHA-1', $latin1, 'salt', 1000 ) },
+        '', "password: UTF8-off latin-1 is OK" );
+
+    like(
+        exception { derive( 'SHA-1', $wide, 'salt', 1000 ) },
+        qr/password must be an octet string/,
+        "password: UTF8-on wide is fatal"
+    );
+
+    is( exception { derive( 'SHA-1', encode_utf8($wide), 'salt', 1000 ) },
+        '', "password: UTF-8 encoded wide is OK" );
+
+    # salt
+
+    utf8::upgrade($latin1);
+
+    like(
+        exception { derive( 'SHA-1', 'pass', $latin1, 1000 ) },
+        qr/salt must be an octet string/,
+        "salt: UTF8-on latin-1 is fatal"
+    );
+
+    is( exception { derive( 'SHA-1', 'pass', encode_utf8($latin1), 1000 ) },
+        '', "salt: UTF-8 encoded latin-1 is OK" );
+
+    utf8::downgrade($latin1);
+    is( exception { derive( 'SHA-1', 'pass', $latin1, 1000 ) },
+        '', "salt: UTF8-off latin-1 is OK" );
+
+    my $wide = "☺♥☺•♥♥☺";
+    like(
+        exception { derive( 'SHA-1', 'pass', $wide, 1000 ) },
+        qr/salt must be an octet string/,
+        "salt: UTF8-on wide is fatal"
+    );
+
+    is( exception { derive( 'SHA-1', 'pass', encode_utf8($wide), 1000 ) },
+        '', "salt: UTF-8 encoded wide is OK" );
+
+};
 
 done_testing;
 
