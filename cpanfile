@@ -9,6 +9,7 @@ on 'test' => sub {
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
   requires "Test::More" => "0.88";
+  requires "perl" => "5.008";
   requires "utf8" => "0";
 };
 
@@ -21,6 +22,7 @@ on 'configure' => sub {
   requires "ExtUtils::MakeMaker" => "6.17";
   requires "File::Spec" => "0";
   requires "Text::ParseWords" => "0";
+  requires "perl" => "5.004";
 };
 
 on 'develop' => sub {

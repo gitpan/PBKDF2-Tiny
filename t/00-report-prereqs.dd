@@ -4,7 +4,8 @@ do { my $x = {
                                         'Config' => '0',
                                         'ExtUtils::MakeMaker' => '6.17',
                                         'File::Spec' => '0',
-                                        'Text::ParseWords' => '0'
+                                        'Text::ParseWords' => '0',
+                                        'perl' => '5.004'
                                       }
                       },
        'develop' => {
@@ -42,6 +43,7 @@ do { my $x = {
                                    'ExtUtils::MakeMaker' => '0',
                                    'File::Spec' => '0',
                                    'Test::More' => '0.88',
+                                   'perl' => '5.008',
                                    'utf8' => '0'
                                  }
                  }

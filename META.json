@@ -4,7 +4,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690",
+   "generated_by" : "Dist::Zilla version 5.025, CPAN::Meta::Converter version 2.142690",
    "license" : [
       "apache_2_0"
    ],
@@ -30,7 +30,8 @@
             "Config" : "0",
             "ExtUtils::MakeMaker" : "6.17",
             "File::Spec" : "0",
-            "Text::ParseWords" : "0"
+            "Text::ParseWords" : "0",
+            "perl" : "5.004"
          }
       },
       "develop" : {
@@ -68,6 +69,7 @@
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
             "Test::More" : "0.88",
+            "perl" : "5.008",
             "utf8" : "0"
          }
       }
@@ -75,7 +77,7 @@
    "provides" : {
       "PBKDF2::Tiny" : {
          "file" : "lib/PBKDF2/Tiny.pm",
-         "version" : "0.004"
+         "version" : "0.005"
       }
    },
    "release_status" : "stable",
@@ -90,7 +92,7 @@
          "web" : "https://github.com/dagolden/PBKDF2-Tiny"
       }
    },
-   "version" : "0.004",
+   "version" : "0.005",
    "x_authority" : "cpan:DAGOLDEN"
 }
 

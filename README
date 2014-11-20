@@ -2,7 +2,7 @@ NAME
     PBKDF2::Tiny - Minimalist PBKDF2 (RFC 2898) with HMAC-SHA1 or HMAC-SHA2
 
 VERSION
-    version 0.004
+    version 0.005
 
 SYNOPSIS
         use PBKDF2::Tiny qw/derive verify/;
